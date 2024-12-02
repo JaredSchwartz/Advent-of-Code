@@ -9,11 +9,8 @@ end
 
 # Answer 1
 function report_processor(report::Vector{Int})::Bool
-    shifted_report = circshift(report, 1)
-    diffs = report[2:end] - shifted_report[2:end]
-    direction_cond = all(diffs .> 0) | all(diffs .< 0)
-    sizes_cond = all(1 .<= abs.(diffs) .<= 3)
-    return direction_cond & sizes_cond
+    diffs = diff(report)
+    return all(1 .<= diffs .<= 3) | all(-1 .>= diffs .>= -3)
 end
 
 function answer1(file::String)::Int
@@ -23,7 +20,7 @@ function answer1(file::String)::Int
 end
 
 # Answer 2
-function surpressor(report::Vector{Int})::Bool
+function suppressor(report::Vector{Int})::Bool
     position_vals = similar(report, Bool)
     for i in eachindex(report)
         r = copy(report)
@@ -35,6 +32,6 @@ end
 
 function answer2(file::String)::Int
     reports = parse_file(file)
-    output = surpressor.(reports)
+    output = suppressor.(reports)
     return count(output)
 end
